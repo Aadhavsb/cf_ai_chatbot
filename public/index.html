@@ -3,15 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Chat Assistant</title>
+  <title>Private EYE Chatbot - Noir Detective</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>AI Chat Assistant</h1>
-      <button id="newChatBtn" class="new-chat-btn">New Chat</button>
+      <div class="header-content">
+        <div class="detective-icon">🕵️</div>
+        <h1>PRIVATE EYE</h1>
+      </div>
+      <div class="header-buttons">
+        <button id="exportBtn" class="noir-btn">Export Case</button>
+        <button id="newChatBtn" class="noir-btn">New Case</button>
+      </div>
     </header>
+
+    <div class="mystery-selector" id="mysterySelector">
+      <div class="mystery-card" data-mystery="dame">
+        <h3>The Dame in Distress</h3>
+        <p>A beautiful dame walks into your office with a problem and a past.</p>
+      </div>
+      <div class="mystery-card" data-mystery="murder">
+        <h3>Murder at Midnight</h3>
+        <p>The clock struck twelve. Someone didn't make it to see the dawn.</p>
+      </div>
+      <div class="mystery-card" data-mystery="heist">
+        <h3>The Diamond Heist</h3>
+        <p>Priceless jewels vanished. Only you can crack this caper.</p>
+      </div>
+      <div class="mystery-card" data-mystery="cipher">
+        <h3>The Encrypted Files</h3>
+        <p>Secret codes, dead drops, and a conspiracy that goes to the top.</p>
+      </div>
+      <div class="mystery-card" data-mystery="disappeared">
+        <h3>The Vanishing Act</h3>
+        <p>They said he disappeared without a trace. You don't buy it.</p>
+      </div>
+      <div class="mystery-card" data-mystery="freeform">
+        <h3>Free Investigation</h3>
+        <p>Just you, the city, and whatever trouble walks through that door.</p>
+      </div>
+    </div>
 
     <div id="chatArea" class="chat-area">
       <div id="messages" class="messages"></div>
@@ -21,10 +54,10 @@
       <input
         type="text"
         id="messageInput"
-        placeholder="Type your message..."
+        placeholder="What's your next move, gumshoe?..."
         autocomplete="off"
       >
-      <button id="sendBtn" class="send-btn">Send</button>
+      <button id="sendBtn" class="send-btn">Investigate</button>
     </div>
   </div>
 
