@@ -497,6 +497,47 @@ body::after {
   z-index: 999;
 }
 
+/* Suggested Messages */
+.suggested-messages {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+  border-top: 1px solid #303030;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  min-height: 50px;
+  align-items: center;
+}
+
+.suggested-messages:empty {
+  display: none;
+}
+
+.suggested-msg-btn {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  color: #a0a0a0;
+  border: 1px solid #404040;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.85rem;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.suggested-msg-btn:hover {
+  background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+  border-color: #606060;
+  color: #c0c0c0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.suggested-msg-btn:active {
+  transform: translateY(0);
+}
+
 /* Noir Response Overlay */
 .noir-overlay {
   position: fixed;
@@ -504,7 +545,10 @@ body::after {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #000;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(40, 40, 40, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(30, 30, 30, 0.3) 0%, transparent 50%),
+    linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
   z-index: 9999;
   display: none;
   opacity: 0;
@@ -518,74 +562,6 @@ body::after {
 
 .noir-overlay.fade-out {
   opacity: 0;
-}
-
-/* Rain background */
-.rain-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
-  overflow: hidden;
-}
-
-.rain {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image:
-    linear-gradient(transparent 0%, transparent 95%, rgba(255, 255, 255, 0.3) 95%, rgba(255, 255, 255, 0.3) 100%);
-  background-size: 2px 50px;
-  animation: rain-fall 0.4s linear infinite;
-  opacity: 0.4;
-}
-
-.rain:nth-child(2) {
-  animation-delay: 0.1s;
-  animation-duration: 0.35s;
-  opacity: 0.3;
-}
-
-.rain:nth-child(3) {
-  animation-delay: 0.2s;
-  animation-duration: 0.45s;
-  opacity: 0.25;
-}
-
-@keyframes rain-fall {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 5% 100%;
-  }
-}
-
-/* Lightning effect */
-.lightning {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
-  opacity: 0;
-  pointer-events: none;
-  animation: lightning-flash 8s infinite;
-}
-
-@keyframes lightning-flash {
-  0%, 100% { opacity: 0; }
-  45% { opacity: 0; }
-  45.5% { opacity: 0.8; }
-  46% { opacity: 0; }
-  46.5% { opacity: 0.6; }
-  47% { opacity: 0; }
-  89% { opacity: 0; }
-  89.5% { opacity: 0.7; }
-  90% { opacity: 0; }
 }
 
 /* Detective response window */

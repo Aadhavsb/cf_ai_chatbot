@@ -53,6 +53,7 @@ const newChatBtn = document.getElementById('newChatBtn');
 const exportBtn = document.getElementById('exportBtn');
 const messagesContainer = document.getElementById('messages');
 const mysteryCards = document.querySelectorAll('.mystery-card');
+const suggestedMessagesContainer = document.getElementById('suggestedMessages');
 
 // API base URL
 const API_BASE = window.location.origin;
@@ -86,6 +87,70 @@ function removeLoadingMessage() {
   }
 }
 
+// Show suggested messages
+function showSuggestedMessages(suggestions) {
+  suggestedMessagesContainer.innerHTML = '';
+
+  if (!suggestions || suggestions.length === 0) {
+    return;
+  }
+
+  suggestions.forEach(suggestion => {
+    const btn = document.createElement('button');
+    btn.className = 'suggested-msg-btn';
+    btn.textContent = suggestion;
+    btn.addEventListener('click', () => {
+      messageInput.value = suggestion;
+      messageInput.focus();
+    });
+    suggestedMessagesContainer.appendChild(btn);
+  });
+}
+
+// Get context-aware suggestions
+function getContextSuggestions(mysteryType, messageCount) {
+  const suggestions = {
+    dame: [
+      "What do you know about her husband?",
+      "Show me the encrypted messages",
+      "Who else is involved?",
+      "Where did you last see them?"
+    ],
+    murder: [
+      "Examine the crime scene",
+      "Interview the suspects",
+      "Check the security footage",
+      "Analyze the poison"
+    ],
+    heist: [
+      "Review the security logs",
+      "Who had access to the vault?",
+      "Trace the network breach",
+      "Find the hacker's signature"
+    ],
+    cipher: [
+      "Decrypt the files",
+      "Who sent the USB drive?",
+      "Follow the money trail",
+      "Check the dead drop location"
+    ],
+    disappeared: [
+      "Search his apartment",
+      "Check his browser history",
+      "Who saw him last?",
+      "Trace his phone records"
+    ],
+    freeform: [
+      "Tell me what you know",
+      "Where do we start?",
+      "Who are the suspects?",
+      "What's the evidence?"
+    ]
+  };
+
+  return suggestions[mysteryType] || suggestions.freeform;
+}
+
 // Show detective response in noir overlay with typewriter effect
 async function showNoirResponse(text) {
   return new Promise((resolve) => {
@@ -100,7 +165,7 @@ async function showNoirResponse(text) {
 
     // Typewriter effect
     let charIndex = 0;
-    const typeSpeed = 30; // milliseconds per character
+    const typeSpeed = 80; // milliseconds per character (slower for dramatic effect)
 
     // Add cursor
     const cursor = document.createElement('span');
@@ -188,6 +253,10 @@ async function sendMessage(message) {
     await showNoirResponse(data.response);
     addMessage(data.response, 'assistant');
 
+    // Show suggested next steps
+    const suggestions = getContextSuggestions(currentMystery);
+    showSuggestedMessages(suggestions);
+
   } catch (error) {
     console.error('Error:', error);
     removeLoadingMessage();
@@ -260,6 +329,10 @@ function selectMystery(mysteryType) {
   // Clear and show intro
   messagesContainer.innerHTML = '';
   addMessage(mystery.intro, 'narration');
+
+  // Show suggested starting questions
+  const suggestions = getContextSuggestions(mysteryType);
+  showSuggestedMessages(suggestions);
 
   messageInput.focus();
 }
