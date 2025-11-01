@@ -6,18 +6,23 @@ export interface Message {
 
 export class ChatRoom {
   state: DurableObjectState;
-  messages: Message[];
+  sql: SqlStorage;
 
   constructor(state: DurableObjectState) {
     this.state = state;
-    this.messages = [];
+    this.sql = state.storage.sql;
   }
 
   async initialize() {
-    const stored = await this.state.storage.get<Message[]>('messages');
-    if (stored) {
-      this.messages = stored;
-    }
+    // Create messages table if it doesn't exist
+    this.sql.exec(`
+      CREATE TABLE IF NOT EXISTS messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        role TEXT NOT NULL,
+        content TEXT NOT NULL,
+        timestamp INTEGER NOT NULL
+      )
+    `);
   }
 
   async fetch(request: Request): Promise<Response> {
@@ -26,20 +31,24 @@ export class ChatRoom {
     const url = new URL(request.url);
 
     if (url.pathname === '/messages' && request.method === 'GET') {
-      return new Response(JSON.stringify(this.messages), {
+      const messages = this.sql.exec(`
+        SELECT role, content, timestamp FROM messages ORDER BY id ASC
+      `).toArray() as Message[];
+
+      return new Response(JSON.stringify(messages), {
         headers: { 'Content-Type': 'application/json' }
       });
     }
 
     if (url.pathname === '/messages' && request.method === 'POST') {
       const { role, content } = await request.json() as { role: 'user' | 'assistant', content: string };
-      const message: Message = {
-        role,
-        content,
-        timestamp: Date.now()
-      };
-      this.messages.push(message);
-      await this.state.storage.put('messages', this.messages);
+      const timestamp = Date.now();
+
+      this.sql.exec(`
+        INSERT INTO messages (role, content, timestamp) VALUES (?, ?, ?)
+      `, role, content, timestamp);
+
+      const message: Message = { role, content, timestamp };
 
       return new Response(JSON.stringify(message), {
         headers: { 'Content-Type': 'application/json' }
@@ -47,8 +56,7 @@ export class ChatRoom {
     }
 
     if (url.pathname === '/reset' && request.method === 'POST') {
-      this.messages = [];
-      await this.state.storage.delete('messages');
+      this.sql.exec(`DELETE FROM messages`);
       return new Response(JSON.stringify({ success: true }), {
         headers: { 'Content-Type': 'application/json' }
       });
