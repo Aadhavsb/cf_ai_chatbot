@@ -86,6 +86,59 @@ function removeLoadingMessage() {
   }
 }
 
+// Show detective response in noir overlay with typewriter effect
+async function showNoirResponse(text) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('noirOverlay');
+    const quoteElement = document.getElementById('detectiveQuote');
+
+    // Clear previous content
+    quoteElement.innerHTML = '';
+
+    // Show overlay
+    overlay.classList.add('active');
+
+    // Typewriter effect
+    let charIndex = 0;
+    const typeSpeed = 30; // milliseconds per character
+
+    // Add cursor
+    const cursor = document.createElement('span');
+    cursor.className = 'typewriter-cursor';
+    quoteElement.appendChild(cursor);
+
+    function typeCharacter() {
+      if (charIndex < text.length) {
+        // Insert character before cursor
+        const textNode = document.createTextNode(text[charIndex]);
+        quoteElement.insertBefore(textNode, cursor);
+        charIndex++;
+        setTimeout(typeCharacter, typeSpeed);
+      } else {
+        // Done typing, remove cursor after a moment
+        setTimeout(() => {
+          cursor.remove();
+
+          // Hold the text for a moment
+          setTimeout(() => {
+            // Fade out
+            overlay.classList.add('fade-out');
+
+            // After fade completes, hide and resolve
+            setTimeout(() => {
+              overlay.classList.remove('active', 'fade-out');
+              resolve();
+            }, 500);
+          }, 1500); // Hold for 1.5 seconds after typing
+        }, 500);
+      }
+    }
+
+    // Start typing after a brief delay
+    setTimeout(typeCharacter, 300);
+  });
+}
+
 // Send message to API
 async function sendMessage(message) {
   if (!message.trim()) return;
@@ -128,8 +181,11 @@ async function sendMessage(message) {
 
     const data = await response.json();
 
-    // Remove loading and add AI response
+    // Remove loading
     removeLoadingMessage();
+
+    // Show noir overlay with typewriter effect, then add to chat
+    await showNoirResponse(data.response);
     addMessage(data.response, 'assistant');
 
   } catch (error) {
