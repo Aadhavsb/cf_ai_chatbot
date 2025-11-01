@@ -5,6 +5,7 @@ export { ChatRoom };
 interface Env {
   AI: any;
   CHAT_ROOM: DurableObjectNamespace;
+  ASSETS: Fetcher;
 }
 
 export default {
@@ -126,7 +127,7 @@ export default {
       }
     }
 
-    // Serve static files (for local development)
-    return new Response('Not found', { status: 404 });
+    // Serve static files
+    return env.ASSETS.fetch(request);
   }
 };
